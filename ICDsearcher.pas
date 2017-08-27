@@ -91,7 +91,7 @@ var
   vICDRecord: TICDRecord;
 begin
   ClearResults;
-  aDOQuery.SQL.Text := format(cQuery, [top, lng, QuotedStr(criteria+'%')]);
+  aDOQuery.SQL.Text := format(cQuery, [top, lng, QuotedStr('%'+criteria+'%')]);
   aDOQuery.Open;
   aDOQuery.First;
   while not aDOQuery.Eof do

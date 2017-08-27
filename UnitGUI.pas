@@ -27,6 +27,7 @@ type
   private
     { Déclarations privées }
     FSearcher: TICDSearcher;
+    function getLngChoosen: string;
   public
     { Déclarations publiques }
   end;
@@ -51,14 +52,7 @@ var
 begin
   //lbxResults.Clear;
   lbxResults.Items.Clear;
-  if cbLng.ItemIndex = 0 then
-  begin
-    vLng := 'FR_DESCRIPTION';
-  end
-  else
-  begin
-    vLng := 'NL_DESCRIPTION';
-  end;
+  vLng := getLngChoosen;
   vnRecords := strtoint(edNResults.Text);
   vCriteria := edCriteria.Text;
 
@@ -83,9 +77,33 @@ begin
   FSearcher.Free;
 end;
 
-procedure TApplicationGUIForm.lbxResultsClick(Sender: TObject);
+function TApplicationGUIForm.getLngChoosen: string;
 begin
-  showmessage(FSearcher.results.Items[lbxResults.ItemIndex].codeICD10);
+  if cbLng.ItemIndex = 0 then
+  begin
+    result := 'FR_DESCRIPTION';
+  end
+  else
+  begin
+    result := 'NL_DESCRIPTION';
+  end;
+end;
+
+procedure TApplicationGUIForm.lbxResultsClick(Sender: TObject);
+var
+  vcode: string;
+  vDescription: string;
+  vLng: string;
+  vmes: string;
+begin
+  vcode := FSearcher.results.Items[lbxResults.ItemIndex].codeICD10;
+  vLng := getLngChoosen;
+  if vLng = 'FR_DESCRIPTION' then
+    vDescription := FSearcher.results.Items[lbxResults.ItemIndex].frDescription
+  else
+    vDescription := FSearcher.results.Items[lbxResults.ItemIndex].nlDescription;
+  vmes := format('code %s = %s',[vcode, vDescription]);
+  showmessage(vmes);
 end;
 
 end.
