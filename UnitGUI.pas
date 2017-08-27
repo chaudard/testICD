@@ -50,7 +50,6 @@ var
   vLng: string;
   vRec: TICDRecord;
 begin
-  //lbxResults.Clear;
   lbxResults.Items.Clear;
   vLng := getLngChoosen;
   vnRecords := strtoint(edNResults.Text);
