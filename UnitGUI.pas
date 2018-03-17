@@ -16,7 +16,6 @@ type
     cbLng: TComboBox;
     lbResults: TLabel;
     memoResults: TMemo;
-    ADOQuery1: TADOQuery;
     lbNResults: TLabel;
     edNResults: TEdit;
     lbxResults: TListBox;
@@ -68,7 +67,7 @@ end;
 
 procedure TApplicationGUIForm.FormCreate(Sender: TObject);
 begin
-  FSearcher := TICDSearcher.Create(ADOQuery1, 'choléra', 'FR_DESCRIPTION', 10);
+  FSearcher := TICDSearcher.Create('choléra', 'FR_DESCRIPTION', 10);
 end;
 
 procedure TApplicationGUIForm.FormDestroy(Sender: TObject);

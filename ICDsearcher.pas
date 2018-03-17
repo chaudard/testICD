@@ -9,21 +9,19 @@ uses
 
 type TICDSearcher = class
   private
-    FADOquery: TADOQuery;
     FCriteria: string;
     FLng: string;
     FTop: integer;
     FResults: TList<TICDRecord>;
+    function getADOquery: TADOquery;
   published
-    property adoQuery: TADOQuery read FADOquery write FADOquery;
     property criteria: string read FCriteria write FCriteria;
     property lng: string read FLng write FLng;
     property top: integer read FTop write FTop;
     property results: TList<TICDRecord> read FResults write FResults;
   public
     constructor Create; overload;
-    constructor Create(const aADOquery: TADOQuery;
-                       const aCriteria: string;
+    constructor Create(const aCriteria: string;
                        const aLng: string;
                        const aTop: integer); overload;
     destructor  Destroy; override;
@@ -41,24 +39,24 @@ uses
 
 constructor TICDSearcher.Create;
 begin
-  aDOquery := nil;
   criteria := '';
   lng := '';
   top := 1;
   results := TList<TICDRecord>.Create;
 end;
 
-constructor TICDSearcher.Create(const aADOquery: TADOQuery;
+function TICDSearcher.getADOquery: TADOquery;
+begin
+  result := TADOQuery.Create(nil);
+  result.ConnectionString :=
+    'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=testICD;Data Source=DEV-DANY';
+end;
+
+constructor TICDSearcher.Create(
   const aCriteria: string;
   const aLng: string;
   const aTop: integer);
 begin
-  aDOquery := aADOquery;
-  if assigned(aDOquery) then
-  begin
-    aDOquery.ConnectionString :=
-    'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=testICD;Data Source=DEV-DANY';
-  end;
   criteria := aCriteria;
   lng := aLng;
   top := aTop;
@@ -89,19 +87,30 @@ var
   vFrDes: string;
   vNlDes: string;
   vICDRecord: TICDRecord;
+  vADOQuery: TADOQuery;
 begin
   ClearResults;
-  aDOQuery.SQL.Text := format(cQuery, [top, lng, QuotedStr('%'+criteria+'%')]);
-  aDOQuery.Open;
-  aDOQuery.First;
-  while not aDOQuery.Eof do
-  begin
-    vCode := aDOQuery.FieldByName('ICD_10_CODE').AsString;
-    vFrDes := aDOQuery.FieldByName('FR_DESCRIPTION').AsString;
-    vnLDes := aDOQuery.FieldByName('NL_DESCRIPTION').AsString;
-    vICDRecord := TICDRecord.Create(vCode, vFrDes, vNlDes);
-    results.Add(vICDRecord);
-    aDOQuery.Next;
+  vADOQuery := getADOquery;
+  try
+    try
+      vADOQuery.SQL.Text := format(cQuery, [top, lng, QuotedStr('%'+criteria+'%')]);
+      vADOQuery.Open;
+      vADOQuery.First;
+      while not vADOQuery.Eof do
+      begin
+        vCode := vADOQuery.FieldByName('ICD_10_CODE').AsString;
+        vFrDes := vADOQuery.FieldByName('FR_DESCRIPTION').AsString;
+        vnLDes := vADOQuery.FieldByName('NL_DESCRIPTION').AsString;
+        vICDRecord := TICDRecord.Create(vCode, vFrDes, vNlDes);
+        results.Add(vICDRecord);
+        vADOQuery.Next;
+      end;
+    except on E: Exception do
+      //
+    end;
+  finally
+  vADOQuery.Close;
+  vADOQuery.Free;
   end;
 end;
 

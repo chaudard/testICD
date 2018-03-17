@@ -90,9 +90,4 @@ object ApplicationGUIForm: TApplicationGUIForm
     TabOrder = 5
     OnClick = lbxResultsClick
   end
-  object ADOQuery1: TADOQuery
-    Parameters = <>
-    Left = 208
-    Top = 96
-  end
 end
