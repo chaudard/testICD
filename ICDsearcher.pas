@@ -34,7 +34,8 @@ end;
 implementation
 
 uses
-  sysUtils;
+  sysUtils,
+  ICDconst;
 
 { TICDSearcher }
 
@@ -49,8 +50,7 @@ end;
 function TICDSearcher.getADOquery: TADOquery;
 begin
   result := TADOQuery.Create(nil);
-  result.ConnectionString :=
-    'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=testICD;Data Source=DEV-DANY';
+  result.ConnectionString := CST_CONNEXION_STRING;
 end;
 
 constructor TICDSearcher.Create(
@@ -81,8 +81,6 @@ begin
 end;
 
 procedure TICDSearcher.ComputeResult;
-const
-  cQuery: string = 'SELECT TOP %d * FROM ICD_10 WHERE %s LIKE %s';
 var
   vCode: string;
   vFrDes: string;
@@ -100,12 +98,12 @@ begin
   vADOQuery := getADOquery;
   try
     try
-      vADOQuery.SQL.Text := format(cQuery, [top, vlng, QuotedStr('%'+criteria+'%')]);
+      vADOQuery.SQL.Text := format(CST_QUERY, [top, vlng, QuotedStr('%'+criteria+'%')]);
       vADOQuery.Open;
       vADOQuery.First;
       while not vADOQuery.Eof do
       begin
-        vCode := vADOQuery.FieldByName('ICD_10_CODE').AsString;
+        vCode := vADOQuery.FieldByName(CST_CODE_FIELD).AsString;
         vFrDes := vADOQuery.FieldByName(vFrDescriptionField).AsString;
         vnLDes := vADOQuery.FieldByName(vNlDescriptionField).AsString;
         vICDRecord := TICDRecord.Create(vCode, vFrDes, vNlDes);

@@ -46,6 +46,7 @@
 			<DCCReference Include="ICDsearcher.pas"/>
 			<DCCReference Include="ICDrecord.pas"/>
 			<DCCReference Include="ICDtranslator.pas"/>
+			<DCCReference Include="ICDconst.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

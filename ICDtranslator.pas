@@ -13,6 +13,9 @@ type
 
 implementation
 
+uses
+  ICDconst;
+
 class function TICDtranslator.GUItranslate(const aICDlng: TICDlng): string;
 begin
   result := 'français';
@@ -24,10 +27,10 @@ end;
 
 class function TICDtranslator.ADOtranslate(const aICDlng: TICDlng): string;
 begin
-  result := 'FR_DESCRIPTION';
+  result := CST_FR_DESC_FIELD;
   case aICDlng of
-    lng_fr: result := 'FR_DESCRIPTION';
-    lng_nl: result := 'NL_DESCRIPTION';
+    lng_fr: result := CST_FR_DESC_FIELD;
+    lng_nl: result := CST_NL_DESC_FIELD;
   end;
 end;
 

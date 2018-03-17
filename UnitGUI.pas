@@ -39,6 +39,7 @@ implementation
 
 uses
   ICDrecord,
+  ICDconst,
   TypInfo;
 
 {$R *.dfm}
@@ -79,9 +80,9 @@ end;
 
 procedure TApplicationGUIForm.FormCreate(Sender: TObject);
 begin
-  edCriteria.Text := 'choléra'; // initialize to test
+  edCriteria.Text := CST_INI_CRITERIA; // initialize to test
   fillComboLng;
-  FSearcher := TICDSearcher.Create('', lng_fr, 10);
+  FSearcher := TICDSearcher.Create('', lng_fr, CST_INI_SEARCH_NUMBER);
 end;
 
 procedure TApplicationGUIForm.FormDestroy(Sender: TObject);
