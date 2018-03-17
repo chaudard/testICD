@@ -4,7 +4,8 @@ uses
   Forms,
   UnitGUI in 'UnitGUI.pas' {ApplicationGUIForm},
   ICDsearcher in 'ICDsearcher.pas',
-  ICDrecord in 'ICDrecord.pas';
+  ICDrecord in 'ICDrecord.pas',
+  ICDtranslator in 'ICDtranslator.pas';
 
 {$R *.res}
 

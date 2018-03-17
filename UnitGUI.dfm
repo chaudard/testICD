@@ -18,9 +18,9 @@ object ApplicationGUIForm: TApplicationGUIForm
   object lbCriteria: TLabel
     Left = 24
     Top = 16
-    Width = 43
+    Width = 35
     Height = 13
-    Caption = 'lbCriteria'
+    Caption = 'Criteria'
   end
   object lbResults: TLabel
     Left = 24
@@ -42,7 +42,6 @@ object ApplicationGUIForm: TApplicationGUIForm
     Width = 121
     Height = 21
     TabOrder = 0
-    Text = 'chol'#233'ra'
   end
   object btSearch: TButton
     Left = 24
@@ -58,27 +57,14 @@ object ApplicationGUIForm: TApplicationGUIForm
     Top = 35
     Width = 170
     Height = 21
-    ItemIndex = 0
     TabOrder = 2
-    Text = 'Fran'#231'ais'
-    Items.Strings = (
-      'Fran'#231'ais'
-      'N'#233'erlandais')
-  end
-  object memoResults: TMemo
-    Left = 192
-    Top = 234
-    Width = 65
-    Height = 57
-    TabOrder = 3
-    Visible = False
   end
   object edNResults: TEdit
     Left = 168
     Top = 95
     Width = 33
     Height = 21
-    TabOrder = 4
+    TabOrder = 3
     Text = '10'
   end
   object lbxResults: TListBox
@@ -87,7 +73,7 @@ object ApplicationGUIForm: TApplicationGUIForm
     Width = 121
     Height = 167
     ItemHeight = 13
-    TabOrder = 5
+    TabOrder = 4
     OnClick = lbxResultsClick
   end
 end

@@ -5,24 +5,25 @@ interface
 uses
   ADODB,
   generics.collections,
-  ICDrecord;
+  ICDrecord,
+  ICDtranslator;
 
 type TICDSearcher = class
   private
     FCriteria: string;
-    FLng: string;
+    FLng: TICDlng;
     FTop: integer;
     FResults: TList<TICDRecord>;
     function getADOquery: TADOquery;
   published
     property criteria: string read FCriteria write FCriteria;
-    property lng: string read FLng write FLng;
+    property lng: TICDlng read FLng write FLng;
     property top: integer read FTop write FTop;
     property results: TList<TICDRecord> read FResults write FResults;
   public
     constructor Create; overload;
     constructor Create(const aCriteria: string;
-                       const aLng: string;
+                       const aLng: TICDlng;
                        const aTop: integer); overload;
     destructor  Destroy; override;
     procedure   ClearResults;
@@ -40,7 +41,7 @@ uses
 constructor TICDSearcher.Create;
 begin
   criteria := '';
-  lng := '';
+  lng := lng_fr;
   top := 1;
   results := TList<TICDRecord>.Create;
 end;
@@ -54,7 +55,7 @@ end;
 
 constructor TICDSearcher.Create(
   const aCriteria: string;
-  const aLng: string;
+  const aLng: TICDlng;
   const aTop: integer);
 begin
   criteria := aCriteria;
@@ -88,19 +89,25 @@ var
   vNlDes: string;
   vICDRecord: TICDRecord;
   vADOQuery: TADOQuery;
+  vFrDescriptionField: string;
+  vNlDescriptionField: string;
+  vlng: string;
 begin
+  vFrDescriptionField := TICDtranslator.ADOtranslate(lng_fr);
+  vNlDescriptionField := TICDtranslator.ADOtranslate(lng_nl);
+  vlng := TICDtranslator.ADOtranslate(lng);
   ClearResults;
   vADOQuery := getADOquery;
   try
     try
-      vADOQuery.SQL.Text := format(cQuery, [top, lng, QuotedStr('%'+criteria+'%')]);
+      vADOQuery.SQL.Text := format(cQuery, [top, vlng, QuotedStr('%'+criteria+'%')]);
       vADOQuery.Open;
       vADOQuery.First;
       while not vADOQuery.Eof do
       begin
         vCode := vADOQuery.FieldByName('ICD_10_CODE').AsString;
-        vFrDes := vADOQuery.FieldByName('FR_DESCRIPTION').AsString;
-        vnLDes := vADOQuery.FieldByName('NL_DESCRIPTION').AsString;
+        vFrDes := vADOQuery.FieldByName(vFrDescriptionField).AsString;
+        vnLDes := vADOQuery.FieldByName(vNlDescriptionField).AsString;
         vICDRecord := TICDRecord.Create(vCode, vFrDes, vNlDes);
         results.Add(vICDRecord);
         vADOQuery.Next;
