@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, DB, ADODB
   , ICDsearcher
-  , ICDtranslator
+  , ICDtranslator, Grids
   ;
 
 type
@@ -18,16 +18,20 @@ type
     lbResults: TLabel;
     lbNResults: TLabel;
     edNResults: TEdit;
-    lbxResults: TListBox;
+    sgResults: TStringGrid;
     procedure btSearchClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure lbxResultsClick(Sender: TObject);
+    procedure sgResultsDrawCell(Sender: TObject; ACol, ARow: Integer;
+      Rect: TRect; State: TGridDrawState);
   private
     { Déclarations privées }
     FSearcher: TICDSearcher;
     function getLngChoosen: TICDlng;
     procedure fillComboLng;
+    procedure clearGrid;
+    procedure fillGrid;
+    procedure clearAndFillGrid;
   public
     { Déclarations publiques }
   end;
@@ -44,6 +48,42 @@ uses
 
 {$R *.dfm}
 
+procedure TApplicationGUIForm.clearGrid;
+begin
+  sgResults.RowCount := 1;
+  sgResults.Cells[0,0] := '';
+  sgResults.Cells[1,0] := '';
+end;
+
+procedure TApplicationGUIForm.fillGrid;
+var
+  vLng: TICDlng;
+  vRec: TICDRecord;
+  i: integer;
+begin
+  sgResults.ColWidths[0] := 50;
+  sgResults.ColWidths[1] := 500;
+  i := -1;
+  for vRec in FSearcher.results do
+  begin
+    inc(i);
+    if i>0 then
+      sgResults.RowCount := sgResults.RowCount + 1;
+    sgResults.Cells[0,i] := vRec.codeICD10;
+    vLng := getLngChoosen;
+    if vLng = lng_fr then
+      sgResults.Cells[1,i] := vRec.frDescription
+    else
+      sgResults.Cells[1,i] := vRec.nlDescription;
+  end;
+end;
+
+procedure TApplicationGUIForm.clearAndFillGrid;
+begin
+  clearGrid;
+  fillGrid;
+end;
+
 procedure TApplicationGUIForm.btSearchClick(Sender: TObject);
 var
   vnRecords: integer;
@@ -52,7 +92,6 @@ var
   vLng: TICDlng;
   vRec: TICDRecord;
 begin
-  lbxResults.Items.Clear;
   vLng := getLngChoosen;
   vnRecords := strtoint(edNResults.Text);
   vCriteria := edCriteria.Text;
@@ -62,10 +101,8 @@ begin
   FSearcher.top := vnRecords;
 
   FSearcher.ComputeResult;
-  for vRec in FSearcher.results do
-  begin
-    lbxResults.AddItem(vRec.codeICD10, vRec);
-  end;
+
+  clearAndFillGrid;
 end;
 
 procedure TApplicationGUIForm.fillComboLng;
@@ -95,21 +132,10 @@ begin
   result := TICDlng(cbLng.ItemIndex);
 end;
 
-procedure TApplicationGUIForm.lbxResultsClick(Sender: TObject);
-var
-  vcode: string;
-  vDescription: string;
-  vLng: TICDlng;
-  vmes: string;
+procedure TApplicationGUIForm.sgResultsDrawCell(Sender: TObject; ACol,
+  ARow: Integer; Rect: TRect; State: TGridDrawState);
 begin
-  vcode := FSearcher.results.Items[lbxResults.ItemIndex].codeICD10;
-  vLng := getLngChoosen;
-  if vLng = lng_fr then
-    vDescription := FSearcher.results.Items[lbxResults.ItemIndex].frDescription
-  else
-    vDescription := FSearcher.results.Items[lbxResults.ItemIndex].nlDescription;
-  vmes := format('code %s = %s',[vcode, vDescription]);
-  showmessage(vmes);
+  //
 end;
 
 end.

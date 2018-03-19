@@ -2,8 +2,8 @@ object ApplicationGUIForm: TApplicationGUIForm
   Left = 0
   Top = 0
   Caption = 'test ICD'
-  ClientHeight = 299
-  ClientWidth = 262
+  ClientHeight = 308
+  ClientWidth = 636
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,7 +24,7 @@ object ApplicationGUIForm: TApplicationGUIForm
   end
   object lbResults: TLabel
     Left = 24
-    Top = 95
+    Top = 103
     Width = 35
     Height = 13
     Caption = 'Results'
@@ -67,13 +67,16 @@ object ApplicationGUIForm: TApplicationGUIForm
     TabOrder = 3
     Text = '10'
   end
-  object lbxResults: TListBox
+  object sgResults: TStringGrid
     Left = 24
-    Top = 114
-    Width = 121
-    Height = 167
-    ItemHeight = 13
+    Top = 122
+    Width = 593
+    Height = 159
+    ColCount = 2
+    DefaultColWidth = 150
+    RowCount = 1
+    FixedRows = 0
     TabOrder = 4
-    OnClick = lbxResultsClick
+    OnDrawCell = sgResultsDrawCell
   end
 end
