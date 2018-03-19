@@ -91,7 +91,10 @@ var
   vCode: string;
   vLng: TICDlng;
   vRec: TICDRecord;
+  Save_Cursor: TCursor;
 begin
+  Save_Cursor := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
   vLng := getLngChoosen;
   vnRecords := strtoint(edNResults.Text);
   vCriteria := edCriteria.Text;
@@ -99,10 +102,14 @@ begin
   FSearcher.criteria := vCriteria;
   FSearcher.lng := vLng;
   FSearcher.top := vnRecords;
-
+  try
   FSearcher.ComputeResult;
-
-  clearAndFillGrid;
+  finally
+    clearAndFillGrid;
+    Screen.Cursor := Save_Cursor;
+    if FSearcher.errorMessage <> '' then
+      showmessage(FSearcher.errorMessage);
+  end;
 end;
 
 procedure TApplicationGUIForm.fillComboLng;

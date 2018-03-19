@@ -14,12 +14,14 @@ type TICDSearcher = class
     FLng: TICDlng;
     FTop: integer;
     FResults: TList<TICDRecord>;
+    FErrorMessage: string;
     function getADOquery: TADOquery;
   published
     property criteria: string read FCriteria write FCriteria;
     property lng: TICDlng read FLng write FLng;
     property top: integer read FTop write FTop;
     property results: TList<TICDRecord> read FResults write FResults;
+    property errorMessage: string read FErrorMessage write FErrorMessage;
   public
     constructor Create; overload;
     constructor Create(const aCriteria: string;
@@ -45,6 +47,7 @@ begin
   lng := lng_fr;
   top := 1;
   results := TList<TICDRecord>.Create;
+  errorMessage := '';
 end;
 
 function TICDSearcher.getADOquery: TADOquery;
@@ -62,6 +65,7 @@ begin
   lng := aLng;
   top := aTop;
   results := TList<TICDRecord>.Create;
+  errorMessage := '';
 end;
 
 destructor TICDSearcher.Destroy;
@@ -95,6 +99,7 @@ begin
   vNlDescriptionField := TICDtranslator.ADOtranslate(lng_nl);
   vlng := TICDtranslator.ADOtranslate(lng);
   ClearResults;
+  errorMessage := '';
   vADOQuery := getADOquery;
   try
     try
@@ -111,7 +116,7 @@ begin
         vADOQuery.Next;
       end;
     except on E: Exception do
-      //
+      errorMessage := 'db connexion : a problem has occured.'; //e.Message;
     end;
   finally
   vADOQuery.Close;
